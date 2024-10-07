@@ -24,14 +24,23 @@ class Game(val gamer: Gamer) {
 
         for (i in 1..nRounds) {
 
-            number = Random.nextInt(0, 3)
+            number = Random.nextInt(0, 2)
             println(" Type \"Rock\", \"Paper\" or \"Scissors\"")
             guess = readlnOrNull().toString()
             if(guess in answers) {
                 if (answers.indexOf(guess) == number) {
                     println("I thought about ${answers[number]}, so it's a tie! No points added")
-                } else {
+                } else if (
+                    answers.indexOf(guess) == 0 && number == 2
+                    || answers.indexOf(guess) == 1 && number == 0
+                    || answers.indexOf(guess) == 2 && number == 1
+                    ) {
+                    println("I thought about ${answers[number]}, and you typed $guess! Point for you.")
                     gamer.addPoint()
+                }
+                else {
+                    println("I thought about ${answers[number]}, and you typed $guess! Point for me.")
+                    gamer.minusPoint()
                 }
             }
         }
@@ -44,32 +53,44 @@ class Game(val gamer: Gamer) {
         readAllScores(filename)
     }
 
+    //funcja zapisuje tylko dane gry jeżeli gracz pobije swój rekord, nazwa gracza nie powtarza się w tabeli
     private fun saveScore(nazwaPliku: String, playername: String, playerscore: Int) {
         try {
             val file = File(nazwaPliku)
             val allScores : HashMap<String, Int> = HashMap()
-            file.appendText("\n$playername,$playerscore")
-            val lines = file.readLines()
+            if(file.length().toInt() == 0){
+                file.writeText("$playername,$playerscore\n")
+            }
+            var lines = file.readLines()
+            file.writeText("$playername,$playerscore\n")
+            file.appendText(lines.joinToString("\n"))
+            file.appendText("\n")
+            lines = file.readLines()
             file.writeText("")
-            lines.forEach { line ->
-                val data = line.split(",")
-                if (data.size == 2) {
-                    val name = data[0]
-                    val score = data[1].toInt()
-                    allScores.put(name, score)
+                lines.forEach { line ->
+                    val data = line.split(",")
+                    if (data[0] == gamer.name && gamer.points >= data[1].toInt()) {
+                        allScores[gamer.name] = gamer.points
+                    } else {
+                        val name = data[0]
+                        val score = data[1].toInt()
+                        allScores[name] = score
+                    }
                 }
-            }
-            //allScores.toSortedMap(compareBy<Int> {allScores[it].thenBy {it}})
-
-            for ((key,value ) in allScores) {
-                    file.appendText("$key,$value\n")
-            }
+                allScores.toList()
+                    .sortedByDescending { (_, score) -> score }
+                    .forEach {
+                            (name, score) ->
+                        file.appendText("$name,$score\n")
+                    }
         } catch (e: IOException) {
             println("Error: ${e.message}")
         }
     }
     private fun readAllScores(nazwaPliku: String) {
         println("Leaderboard: \n")
+        val allScores : HashMap<String, Int> = HashMap()
+
         try {
             var i: Int = 1
             val file = File(nazwaPliku)
@@ -79,8 +100,9 @@ class Game(val gamer: Gamer) {
                 if (data.size == 2) {
                     val name = data[0]
                     val score = data[1].toInt()
+                    //allScores
                     if (name == gamer.name){
-                        println("$i $name: $score <- you")
+                        println("$i $name: $score <- your best score")
                     } else {
                         println( "$i $name: $score")
                     }
@@ -101,21 +123,22 @@ class Game(val gamer: Gamer) {
                 file.createNewFile()
                 return null
             }
-            val linia = file.readText().trim()
-            if (linia.isNotEmpty()) {
-                val data = linia.split(",")
-                if (data.size >= 2) {
-                    val name = data[0]
-                    val score = data[1].toIntOrNull() ?: 0 //gdy nie wczyta inta zwraca null, null zamieniony na zero
-                    return Pair(name, score)
-                } else {
-                    println("not enough data")
-                    return null
-                }
-            } else {
-                // not enough data
+            val linia = file.readLines()
+            if(linia.size == 0) {
                 return null
             }
+            val line0 = linia[0]
+                    val data = line0.split(",")
+                    if (data.size >= 2) {
+                        val name = data[0]
+                        val score =
+                            data[1].toIntOrNull() ?: 0 //gdy nie wczyta inta zwraca null, null zamieniony na zero
+                        return Pair(name, score)
+                    } else {
+                        println("not enough data")
+                        return null
+                    }
+
         } catch (e: IOException) {
             println("error: ${e.message}")
             return null
