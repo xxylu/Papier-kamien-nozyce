@@ -1,12 +1,8 @@
-import java.io.File
-import java.io.IOException
 import kotlin.random.Random
 
 class Game(val gamer: Gamer) {
     var bestPlayer: String
     var bestScore: Int
-    private val filename = "bs.csv"
-
 
     fun play(nRounds: Int) {
         val file = FileCSV()

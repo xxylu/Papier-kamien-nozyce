@@ -1,8 +1,7 @@
 import java.io.File
 import java.io.IOException
-class FileCSV() {
-    val file = File("bs.csv")
-
+class FileCSV {
+    private val file = File("bs.csv")
 
     init {
         file
@@ -43,10 +42,9 @@ class FileCSV() {
     }
     fun readAllScores(playername: String) {
         println("Leaderboard: \n")
-        val allScores : HashMap<String, Int> = HashMap()
 
         try {
-            var i: Int = 1
+            var i = 1
             val lines = file.readLines()
             lines.forEach { line ->
                 val data = line.split(",")
@@ -76,7 +74,7 @@ class FileCSV() {
                 return null
             }
             val linia = file.readLines()
-            if(linia.size == 0) {
+            if(linia.isEmpty()) {
                 return null
             }
             val line0 = linia[0]

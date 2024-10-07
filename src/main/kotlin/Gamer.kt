@@ -1,6 +1,6 @@
 class Gamer(gname: String) {
     var name: String = gname
-    var points: Int = 0
+    var points = 0
 
     fun addPoint(){
         points++
