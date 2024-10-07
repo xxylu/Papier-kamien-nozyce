@@ -2,6 +2,7 @@ package org.example
 import Game
 
 fun main() {
+
     println("Your name:")
     val gName: String = readlnOrNull()?:""
     val gamer = Gamer(gName)

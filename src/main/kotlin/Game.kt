@@ -47,6 +47,7 @@ class Game(val gamer: Gamer) {
         println("Total score of ${gamer.name}: ${gamer.points}")
 
         saveScore(filename, gamer.name, gamer.points)
+
         if (bestScore < gamer.points) {
             print("New record!!!\n\n")
         }
