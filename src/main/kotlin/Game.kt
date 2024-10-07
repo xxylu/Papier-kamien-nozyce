@@ -37,6 +37,7 @@ class Game(val gamer: Gamer) {
         if (bestScore < gamer.points) {
             print("new record")
         }
+        println("Leaderboard \n\n\n")
     }
 
     private fun saveScore(nazwaPliku: String, name: String, score: Int) {
