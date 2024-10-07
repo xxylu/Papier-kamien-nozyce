@@ -1,7 +1,7 @@
 package org.example
 
 class Gamer(gname: String) {
-    var name: String
+    var name: String = gname
     var points: Int
 
     fun addPoint(){
@@ -12,7 +12,6 @@ class Gamer(gname: String) {
     }
 
     init {
-        name = gname
         points = 0
     }
 }

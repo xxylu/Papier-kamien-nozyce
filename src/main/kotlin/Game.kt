@@ -1,9 +1,7 @@
 
 import org.example.Gamer
-import org.example.Filem
 import java.io.File
 import java.io.IOException
-import kotlin.Pair
 import kotlin.random.Random
 
 class Game(val gamer: Gamer) {
@@ -16,13 +14,11 @@ class Game(val gamer: Gamer) {
         println("Hi ${gamer.name}, let's play $nRounds rounds of rock, paper, scissors.")
         println("Best Player is $bestPlayer, with $bestScore")
 
-
-        var number = 0;
+        var number: Int
         var guess: String
         val answers = listOf("Rock", "Paper", "Scissors")
 
         for (i in 1..nRounds) {
-
 
             number = Random.nextInt(0, 3);
             println("Let's start. Type \"Rock\", \"Paper\" or \"Scissors\"")
