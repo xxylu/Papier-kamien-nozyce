@@ -9,5 +9,4 @@ fun main() {
     val nRounds = readlnOrNull()?.toIntOrNull() ?: 1
     val game = Game(gamer)
     game.play(nRounds)
-
 }

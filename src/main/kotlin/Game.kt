@@ -12,7 +12,11 @@ class Game(val gamer: Gamer) {
 
     fun play(nRounds: Int) {
         println("Hi ${gamer.name}, let's play $nRounds rounds of rock, paper, scissors.")
-        println("Best Player is $bestPlayer, with $bestScore")
+        if(bestPlayer == "empty"){
+            println("There is no best player yet.")
+        } else {
+            println("Best Player is $bestPlayer, with $bestScore")
+        }
 
         var number: Int
         var guess: String
@@ -20,43 +24,70 @@ class Game(val gamer: Gamer) {
 
         for (i in 1..nRounds) {
 
-            number = Random.nextInt(0, 3);
+            number = Random.nextInt(0, 3)
             println(" Type \"Rock\", \"Paper\" or \"Scissors\"")
             guess = readlnOrNull().toString()
             if(guess in answers) {
                 if (answers.indexOf(guess) == number) {
                     println("I thought about ${answers[number]}, so it's a tie! No points added")
+                } else {
+                    gamer.addPoint()
                 }
-            } else {
-                gamer.addPoint()
-                println("You typed wrong answer")
             }
         }
         println("Total score of ${gamer.name}: ${gamer.points}")
+
         saveScore(filename, gamer.name, gamer.points)
         if (bestScore < gamer.points) {
-            print("new record")
+            print("New record!!!\n\n")
         }
-        println("Leaderboard \n\n\n")
+        readAllScores(filename)
     }
 
-    private fun saveScore(nazwaPliku: String, name: String, score: Int) {
+    private fun saveScore(nazwaPliku: String, playername: String, playerscore: Int) {
         try {
             val file = File(nazwaPliku)
-            file.writeText("$name,$score")
+            val allScores : HashMap<String, Int> = HashMap()
+            file.appendText("\n$playername,$playerscore")
+            val lines = file.readLines()
+            file.writeText("")
+            lines.forEach { line ->
+                val data = line.split(",")
+                if (data.size == 2) {
+                    val name = data[0]
+                    val score = data[1].toInt()
+                    allScores.put(name, score)
+                }
+            }
+            //allScores.toSortedMap(compareBy<Int> {allScores[it].thenBy {it}})
+
+            for ((key,value ) in allScores) {
+                    file.appendText("$key,$value\n")
+            }
         } catch (e: IOException) {
             println("Error: ${e.message}")
         }
     }
     private fun readAllScores(nazwaPliku: String) {
+        println("Leaderboard: \n")
         try {
+            var i: Int = 1
             val file = File(nazwaPliku)
             val lines = file.readLines()
             lines.forEach { line ->
                 val data = line.split(",")
-                val name = data[0]
-                val score = data[1].toInt()
-                println("$name: $score")
+                if (data.size == 2) {
+                    val name = data[0]
+                    val score = data[1].toInt()
+                    if (name == gamer.name){
+                        println("$i $name: $score <- you")
+                    } else {
+                        println( "$i $name: $score")
+                    }
+                    i++
+                } else {
+                    println("Not enough data.")
+                }
             }
         } catch (e: IOException) {
             println("Error: ${e.message}")
@@ -82,7 +113,7 @@ class Game(val gamer: Gamer) {
                     return null
                 }
             } else {
-                println("There is no best player yet.")
+                // not enough data
                 return null
             }
         } catch (e: IOException) {
