@@ -1,5 +1,6 @@
 package org.example
 import Game
+import Gamer
 
 fun main() {
     println("Your name:")

@@ -1,5 +1,3 @@
-package org.example
-
 class Gamer(gname: String) {
     var name: String = gname
     var points: Int
