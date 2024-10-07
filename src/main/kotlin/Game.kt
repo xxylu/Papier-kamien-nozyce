@@ -21,20 +21,11 @@ class Game(val gamer: Gamer) {
         for (i in 1..nRounds) {
 
             number = Random.nextInt(0, 3);
-            println("Let's start. Type \"Rock\", \"Paper\" or \"Scissors\"")
+            println(" Type \"Rock\", \"Paper\" or \"Scissors\"")
             guess = readlnOrNull().toString()
             if(guess in answers) {
                 if (answers.indexOf(guess) == number) {
                     println("I thought about ${answers[number]}, so it's a tie! No points added")
-                } else if(answers.indexOf(guess) == 0 && number == 1) {
-                    gamer.minusPoint()
-                    println("I thought about ${answers[number]}. Minus point!")
-                } else if(answers.indexOf(guess) == 1 && number == 2) {
-                    gamer.minusPoint()
-                    println("I thought about ${answers[number]}. Minus point!")
-                } else if(answers.indexOf(guess) == 2 && number == 0) {
-                    gamer.minusPoint()
-                    println("I thought about ${answers[number]}. Minus point!")
                 }
             } else {
                 gamer.addPoint()
@@ -42,8 +33,8 @@ class Game(val gamer: Gamer) {
             }
         }
         println("Total score of ${gamer.name}: ${gamer.points}")
+        saveScore(filename, gamer.name, gamer.points)
         if (bestScore < gamer.points) {
-            saveScore(filename, gamer.name, gamer.points)
             print("new record")
         }
     }
@@ -52,6 +43,20 @@ class Game(val gamer: Gamer) {
         try {
             val file = File(nazwaPliku)
             file.writeText("$name,$score")
+        } catch (e: IOException) {
+            println("Error: ${e.message}")
+        }
+    }
+    private fun readAllScores(nazwaPliku: String) {
+        try {
+            val file = File(nazwaPliku)
+            val lines = file.readLines()
+            lines.forEach { line ->
+                val data = line.split(",")
+                val name = data[0]
+                val score = data[1].toInt()
+                println("$name: $score")
+            }
         } catch (e: IOException) {
             println("Error: ${e.message}")
         }
@@ -76,7 +81,7 @@ class Game(val gamer: Gamer) {
                     return null
                 }
             } else {
-                println("empty file")
+                println("There is no best player yet.")
                 return null
             }
         } catch (e: IOException) {
