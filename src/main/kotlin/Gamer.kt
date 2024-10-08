@@ -1,5 +1,5 @@
-class Gamer(gname: String) {
-    var name: String = gname
+class Gamer(gName: String) {
+    var name: String = gName
     var points = 0
 
     fun addPoint(){

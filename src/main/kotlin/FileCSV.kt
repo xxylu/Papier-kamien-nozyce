@@ -8,22 +8,22 @@ class FileCSV {
     }
 
     //funcja zapisuje tylko dane gry jeżeli gracz pobije swój rekord, nazwa gracza nie powtarza się w tabeli
-    fun saveScore(playername: String, playerscore: Int) {
+    fun saveScore(playerName: String, playerScore: Int) {
         try {
             val allScores : HashMap<String, Int> = HashMap()
             if(file.length().toInt() == 0){
-                file.writeText("$playername,$playerscore\n")
+                file.writeText("$playerName,$playerScore\n")
             }
             var lines = file.readLines()
-            file.writeText("$playername,$playerscore\n")
+            file.writeText("$playerName,$playerScore\n")
             file.appendText(lines.joinToString("\n"))
             file.appendText("\n")
             lines = file.readLines()
             file.writeText("")
             lines.forEach { line ->
                 val data = line.split(",")
-                if (data[0] == playername && playerscore >= data[1].toInt()) {
-                    allScores[playername] = playerscore
+                if (data[0] == playerName && playerScore >= data[1].toInt()) {
+                    allScores[playerName] = playerScore
                 } else {
                     val name = data[0]
                     val score = data[1].toInt()
@@ -40,7 +40,7 @@ class FileCSV {
             println("Error: ${e.message}")
         }
     }
-    fun readAllScores(playername: String) {
+    fun readAllScores(playerName: String) {
         println("Leaderboard: \n")
 
         try {
@@ -52,7 +52,7 @@ class FileCSV {
                     val name = data[0]
                     val score = data[1].toInt()
                     //allScores
-                    if (name == playername){
+                    if (name == playerName){
                         println("$i $name: $score <- your best score")
                     } else {
                         println( "$i $name: $score")
@@ -73,16 +73,15 @@ class FileCSV {
                 file.createNewFile()
                 return null
             }
-            val linia = file.readLines()
-            if(linia.isEmpty()) {
+            val line = file.readLines()
+            if(line.isEmpty()) {
                 return null
             }
-            val line0 = linia[0]
+            val line0 = line[0]
             val data = line0.split(",")
             if (data.size >= 2) {
                 val name = data[0]
-                val score =
-                    data[1].toIntOrNull() ?: 0 //gdy nie wczyta inta zwraca null, null zamieniony na zero
+                val score = data[1].toIntOrNull() ?: 0 //gdy nie wczyta inta zwraca null, null zamieniony na zero
                 return Pair(name, score)
             } else {
                 println("not enough data")
